@@ -1,28 +1,26 @@
 package com.example.ahmedzaidi73.randomnumbergenerator;
 
 import android.net.Uri;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Base64;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import java.io.BufferedWriter;
+import android.util.Log;
+import java.io.FileWriter;
+import android.media.MediaScannerConnection;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
-
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
-import java.util.Arrays;
-import java.util.Random;
+import java.io.*;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,22 +42,45 @@ public class MainActivity extends AppCompatActivity {
 
     public void generate(View view) throws NoSuchProviderException, NoSuchAlgorithmException, FileNotFoundException {
         SecureRandom secureRandomGenerator = SecureRandom.getInstance("SHA1PRNG");
-        byte[] randomBytes = new byte[128];
+        byte[] randomBytes = new byte[30000000];
         secureRandomGenerator.nextBytes(randomBytes);
         TextView myText = (TextView) findViewById(R.id.textView);
-        //String myString = String.valueOf(randomBytes);
-        String myString = new String(Base64.encodeToString(randomBytes,1));
-        myText.setText(myString);
-        String filename = "BF.dat";
-        try {
-            FileOutputStream FOS = openFileOutput(filename, MODE_WORLD_READABLE);
-            FOS.write(randomBytes);
-            FOS.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        try
+        {
+            String myString = new String(randomBytes, "UTF8");
+            myText.setText(myString);
+            // Creates a trace file in the primary external storage space of the
+            // current application.
+            // If the file does not exists, it is created.
+            File traceFile = new File((this.getApplicationContext()).getExternalFilesDir(null), "TraceFile.txt");
+            if (!traceFile.exists())
+                traceFile.createNewFile();
+            // Adds a line to the trace file
+            BufferedWriter writer = new BufferedWriter(new FileWriter(traceFile, true /*append*/));
+            writer.write(myString);
+            writer.close();
+            // Refresh the data so it can seen when the device is plugged in a
+            // computer. You may have to unplug and replug the device to see the
+            // latest changes. This is not necessary if the user should not modify
+            // the files.
+            MediaScannerConnection.scanFile(this.getApplicationContext(), new String[] { traceFile.toString() },
+                    null,
+                    null);
+            CharSequence text = "File Generated";
+            int duration = Toast.LENGTH_SHORT;
+
+            Toast toast = Toast.makeText(getApplicationContext(), text, duration);
+            toast.show();
+
+        }
+        catch(UnsupportedEncodingException e){
             e.printStackTrace();
         }
+        catch (IOException e)
+        {
+            Log.e("com.example.ahmedzaidi", "Unabl");
+        }
+
 
     }
 
