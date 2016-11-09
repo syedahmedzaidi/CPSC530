@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void generate(View view) throws NoSuchProviderException, NoSuchAlgorithmException, FileNotFoundException {
         SecureRandom secureRandomGenerator = SecureRandom.getInstance("SHA1PRNG");
-        byte[] randomBytes = new byte[30000000];
+        byte[] randomBytes = new byte[17000000];
         secureRandomGenerator.nextBytes(randomBytes);
         TextView myText = (TextView) findViewById(R.id.textView);
         try
@@ -56,8 +56,10 @@ public class MainActivity extends AppCompatActivity {
             if (!traceFile.exists())
                 traceFile.createNewFile();
             // Adds a line to the trace file
-            BufferedWriter writer = new BufferedWriter(new FileWriter(traceFile, true /*append*/));
-            writer.write(myString);
+            //BufferedWriter writer = new BufferedWriter(new FileWriter(traceFile, true /*append*/));
+            FileOutputStream writer = new FileOutputStream(traceFile, true /* append*/);
+            writer.write(randomBytes);
+            writer.flush();
             writer.close();
             // Refresh the data so it can seen when the device is plugged in a
             // computer. You may have to unplug and replug the device to see the
