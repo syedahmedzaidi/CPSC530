@@ -10,13 +10,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.ahmedzaidi73.randomnumbergenerator.MainActivity">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        android:textSize="30sp" />
-
     <Button
         android:id="@+id/button"
         android:layout_width="wrap_content"
@@ -24,6 +17,14 @@
         android:layout_below="@+id/textView"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="107dp"
-        android:onClick="generate"
         android:text="Button" />
+
+    <TextView
+        android:text="Current Entropy: "
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="46dp"
+        android:id="@+id/textView2" />
 </RelativeLayout>
