@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
                     sCurrentLine = br2.readLine();
                     str = new StringBuilder(String.valueOf(str)).append(sCurrentLine).toString();
                     myText.setText(str);
-                    Process su = Runtime.getRuntime().exec("cat /dev/random", null, null);
+                    //Process su = Runtime.getRuntime().exec("cat /dev/random", null, null);
                     /*while (Integer.parseInt(sCurrentLine) != 0) {
                         //Process su = Runtime.getRuntime().exec("cat /dev/random", null, null);
 
@@ -44,27 +44,34 @@ public class MainActivity extends AppCompatActivity {
 
                     }*/
                     //1000 seconds = 1000000000000 nanoseconds
-                    long timeItTook;
+                    double dt;
                     double rate;
                     //16*60*NANOSEC_PER_SEC
                     String header = "time (seconds) entropy (bits) random(bytes/nanoseconds)" ;
                     String seperator = "==============  ==============  ======================\n";
                     //writeToFile(header.getBytes());
                     //writeToFile(seperator.getBytes());
-                    long startTime = System.nanoTime();
-                    while (((timeItTook = (System.nanoTime()-startTime))< 1000000000000l)) {
-                            //Process su = Runtime.getRuntime().exec("cat /dev/random", null, null);
-                            timeItTook = (System.nanoTime()-startTime);
-                            BufferedReader br3 = new BufferedReader(new FileReader("/proc/sys/kernel/random/entropy_avail"));
-                            sCurrentLine = br3.readLine();
-                            String slash = "/";
-                            rate = (1.0/(double) timeItTook) * 1000000000;
-                            print = '\n'+timeItTook+" "+sCurrentLine+" "+rate+'\n';
-                            System.out.println(print);
+                    long startTime = System.currentTimeMillis();
+                    long end = startTime + 1000000;
+                    long t2;
+                    long t1 = startTime;
+                    //do{
+                    while(System.currentTimeMillis() < end){
+                                Runtime.getRuntime().exec("cat /dev/random", null, null);
+                                BufferedReader br3 = new BufferedReader(new FileReader("/proc/sys/kernel/random/entropy_avail"));
+                    //while (((timeItTook = (System.nanoTime()-startTime))< 1000000000000l)) {
+                                sCurrentLine = br3.readLine();
+                                t2 = System.currentTimeMillis();
+                                double t22 = t2 * 0.001;
+                                dt = (t22-(t1*0.001));
+                                rate = (1.0/dt);
+                                print = '\n'+(t2-startTime)*0.001+" "+sCurrentLine+" "+rate+'\n';
+                                if(!Double.isInfinite(rate)){System.out.println(print);}
+                                t1 = t2;
                             //writeToFile(print.getBytes());
                             //System.out.println("Entropy: " + sCurrentLine);
                             //System.out.println("Time: " + timeItTook);
-                    }
+                    }//while(t2 < (t3+5000000));
                     System.out.println("Done");
                 } catch (IOException e) {
                     e.printStackTrace();
